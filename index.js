@@ -102,6 +102,28 @@ async function run() {
 
         })
 
+        // Update Boosted Books
+        app.post('/books/boost', async (req, res) => {
+            const id = req.body;
+            const query = {_id: ObjectId(id.id)};
+            const upDateDoc = { $set: { boost: true } }
+            const myresult =  booksCollection.updateOne(query, upDateDoc, (err, result ) => {
+                if(result){
+                    res.send(result)
+                }
+            })
+        }) 
+
+        // Boosted books 
+
+        app.get('/boostedBooks', async (req, res) => {
+            const userEmail = req.query.email;
+            const query = { userEmail: userEmail, boost: true }
+            const coursor = booksCollection.find(query)
+            const result = await coursor.toArray();
+            res.send(result)
+        })
+
         // Delete Boook by user
         app.delete('/books/delete', async (req, res) => {
             const id = req.body;
